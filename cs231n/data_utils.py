@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 from six.moves import cPickle as pickle
 import numpy as np
 import os

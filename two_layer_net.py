@@ -8,13 +8,14 @@
 
 # A bit of setup
 
+
 import matplotlib.pyplot as plt
 import numpy as np
 
+from cs231n.classifiers.neural_net import TwoLayerNet
 from cs231n.data_utils import load_CIFAR10
 from cs231n.gradient_check import eval_numerical_gradient
 from cs231n.vis_utils import visualize_grid
-from neural_net import TwoLayerNet
 
 plt.rcParams['figure.figsize'] = (10.0, 8.0)  # set default size of plots
 plt.rcParams['image.interpolation'] = 'nearest'
