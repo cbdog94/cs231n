@@ -67,17 +67,17 @@ classes = ['plane', 'car', 'bird', 'cat', 'deer',
            'dog', 'frog', 'horse', 'ship', 'truck']
 num_classes = len(classes)
 samples_per_class = 7
-for y, cls in enumerate(classes):
-    idxs = np.flatnonzero(y_train == y)
-    idxs = np.random.choice(idxs, samples_per_class, replace=False)
-    for i, idx in enumerate(idxs):
-        plt_idx = i * num_classes + y + 1
-        plt.subplot(samples_per_class, num_classes, plt_idx)
-        plt.imshow(X_train[idx].astype('uint8'))
-        plt.axis('off')
-        if i == 0:
-            plt.title(cls)
-plt.show()
+# for y, cls in enumerate(classes):
+#     idxs = np.flatnonzero(y_train == y)
+#     idxs = np.random.choice(idxs, samples_per_class, replace=False)
+#     for i, idx in enumerate(idxs):
+#         plt_idx = i * num_classes + y + 1
+#         plt.subplot(samples_per_class, num_classes, plt_idx)
+#         plt.imshow(X_train[idx].astype('uint8'))
+#         plt.axis('off')
+#         if i == 0:
+#             plt.title(cls)
+# plt.show()
 
 
 # Split the data into train, val, and test sets. In addition we will
@@ -137,10 +137,10 @@ print('dev data shape: ', X_dev.shape)
 # first: compute the image mean based on the training data
 mean_image = np.mean(X_train, axis=0)
 print(mean_image[:10])  # print a few of the elements
-plt.figure(figsize=(4, 4))
-plt.imshow(mean_image.reshape((32, 32, 3)).astype(
-    'uint8'))  # visualize the mean image
-plt.show()
+# plt.figure(figsize=(4, 4))
+# plt.imshow(mean_image.reshape((32, 32, 3)).astype(
+#     'uint8'))  # visualize the mean image
+# plt.show()
 
 
 # second: subtract the mean image from train and test data
@@ -231,9 +231,6 @@ print('Vectorized loss: %e computed in %fs' % (loss_vectorized, toc - tic))
 print('difference: %f' % (loss_naive - loss_vectorized))
 
 
-# In[ ]:
-
-
 # Complete the implementation of svm_loss_vectorized, and compute the gradient
 # of the loss function in a vectorized way.
 
@@ -261,8 +258,6 @@ print('difference: %f' % difference)
 # We now have vectorized and efficient expressions for the loss, the
 # gradient and our gradient matches the numerical gradient. We are
 # therefore ready to do SGD to minimize the loss.
-
-# In[ ]:
 
 
 svm = LinearSVM()
@@ -328,7 +323,18 @@ best_svm = None
 # confident that your validation code works, you should rerun the validation   #
 # code with a larger value for num_iters.                                      #
 ##########################################################################
-pass
+for lr in learning_rates:
+    for reg in regularization_strengths:
+        svm = LinearSVM()
+        svm.train(X_train, y_train, learning_rate=lr, reg=reg, num_iters=1500)
+        y_train_pred = svm.predict(X_train)
+        train_acc = np.mean(y_train == y_train_pred)
+        y_val_pred = svm.predict(X_val)
+        val_acc = np.mean(y_val == y_val_pred)
+        results[(lr,reg)]=(train_acc,val_acc)
+        if val_acc > best_val:
+            best_val = val_acc
+            best_svm = svm
 ##########################################################################
 #                              END OF YOUR CODE                                #
 ##########################################################################
@@ -340,9 +346,6 @@ for lr, reg in sorted(results):
         lr, reg, train_accuracy, val_accuracy))
 
 print('best validation accuracy achieved during cross-validation: %f' % best_val)
-
-
-# In[ ]:
 
 
 x_scatter = [math.log10(x[0]) for x in results]
@@ -369,16 +372,10 @@ plt.title('CIFAR-10 validation accuracy')
 plt.show()
 
 
-# In[ ]:
-
-
 # Evaluate the best svm on test set
 y_test_pred = best_svm.predict(X_test)
 test_accuracy = np.mean(y_test == y_test_pred)
 print('linear SVM on raw pixels final test set accuracy: %f' % test_accuracy)
-
-
-# In[ ]:
 
 
 # Visualize the learned weights for each class.
@@ -397,6 +394,7 @@ for i in range(10):
     plt.imshow(wimg.astype('uint8'))
     plt.axis('off')
     plt.title(classes[i])
+plt.show()
 
 
 # ### Inline question 2:
